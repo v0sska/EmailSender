@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Getter
 @Setter
 @NoArgsConstructor
+@Document(indexName="messages")
 public class Messages {
 
     @Id
