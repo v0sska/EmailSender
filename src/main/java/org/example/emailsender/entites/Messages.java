@@ -25,6 +25,9 @@ public class Messages {
     @Field(type = FieldType.Text)
     private String email;
 
+    @Field(type = FieldType.Text)
+    private String status;
+
     public Messages(String content, String subject, String email) {
         this.content = content;
         this.subject = subject;
