@@ -18,4 +18,3 @@ public class ElasticConfiguration extends ElasticsearchConfiguration {
                 .build();
     }
 }
-
