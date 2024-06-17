@@ -3,6 +3,7 @@ package org.example.emailsender.services;
 import lombok.AllArgsConstructor;
 import org.example.emailsender.entites.Messages;
 import org.example.emailsender.enums.Status;
+import org.example.emailsender.interfaces.IMessagesService;
 import org.example.emailsender.repositories.MessagesRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class MessagesService {
+public class MessagesService implements IMessagesService {
 
   private MessagesRepository messagesRepository;
 
@@ -33,7 +34,7 @@ public class MessagesService {
     }
 }
 
-    public List<Messages> findMessagesByStatus(Status status) {
+    public List<Messages> findMessagesByStatus(String status) {
         return messagesRepository.findByStatus(status);
     }
 

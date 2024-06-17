@@ -1,10 +1,10 @@
 package org.example.emailsender.services;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import org.example.emailsender.entites.Messages;
 import org.example.emailsender.enums.Status;
 import org.example.emailsender.interfaces.IEmailService;
+import org.example.emailsender.interfaces.IMessagesService;
 import org.example.emailsender.message_broker.Publisher;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,12 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @AllArgsConstructor
-@Log4j
 public class EmailService implements IEmailService {
 
     private Publisher publisher;
 
-    private MessagesService messagesService;
+    private IMessagesService messagesService;
 
     private JavaMailSender mailSender;
 
@@ -29,9 +28,10 @@ public class EmailService implements IEmailService {
 
 
     @Override
+    @Scheduled(fixedRate = 60000) // 1 хвилина
     public void sentEmail() {
-
-        List<Messages> messagesToSent = messagesService.findMessagesByStatus(Status.RECEIVED);
+        List<Messages> messagesToSent = messagesService.findMessagesByStatus(Status.RECEIVED.name());
+        System.out.println("Found " + messagesToSent.size() + " messages to send");
 
         for (Messages message : messagesToSent) {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -39,8 +39,10 @@ public class EmailService implements IEmailService {
                 mailMessage.setTo(message.getEmail());
                 mailMessage.setSubject(message.getSubject());
                 mailMessage.setText(message.getContent());
+                System.out.println("Sending email to " + message.getEmail());
                 mailSender.send(mailMessage);
                 messagesService.updateStatus(message.getId(), Status.SENDED);
+                System.out.println("Email sent to " + message.getEmail());
             } catch (Exception e) {
                 System.err.println("Error sending email to " + message.getEmail() + ": " + e.getMessage());
                 messagesService.updateStatus(message.getId(), Status.ERROR);
@@ -48,11 +50,12 @@ public class EmailService implements IEmailService {
         }
     }
 
+
     @Override
     @Scheduled(fixedRate = 300000) // 5 хвилин
     public void checkStatusAndSendEmail() {
 
-        List<Messages> errorMessages = messagesService.findMessagesByStatus(Status.ERROR);
+        List<Messages> errorMessages = messagesService.findMessagesByStatus(Status.ERROR.name());
 
         for (Messages message : errorMessages) {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -62,10 +65,10 @@ public class EmailService implements IEmailService {
                 mailMessage.setText(message.getContent());
                 mailSender.send(mailMessage);
                 messagesService.updateStatus(message.getId(), Status.SENDED);
-                retryAttempts.remove(message.getId()); // скидання спроб після успішної відправки
+                retryAttempts.remove(message.getId());
             } catch (Exception e) {
                 System.err.println("Error sending email to " + message.getEmail() + ": " + e.getMessage());
-                retryAttempts.merge(message.getId(), 1, Integer::sum); // збільшення кількості спроб
+                retryAttempts.merge(message.getId(), 1, Integer::sum);
                 messagesService.updateStatus(message.getId(), Status.ERROR);
             }
         }

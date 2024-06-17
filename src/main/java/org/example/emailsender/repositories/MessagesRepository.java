@@ -14,6 +14,6 @@ public interface MessagesRepository extends CrudRepository<Messages, String> {
 
     Page<Messages> findAll(Pageable pageable);
 
-    List<Messages> findByStatus(Status status);
+    List<Messages> findByStatus(String status);
 
 }
