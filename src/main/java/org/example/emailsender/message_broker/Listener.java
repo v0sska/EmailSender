@@ -26,7 +26,7 @@ public class Listener {
 
         System.out.println("Received message: " + message);
 
-        messagesRepository.save(messageToSent);
+       messagesRepository.save(messageToSent);
     }
 
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MessagesService {
 
-    private MessagesRepository messagesRepository;
+  private MessagesRepository messagesRepository;
 
     public void addMessages(String content, String email, String subject) {
         Messages message = new Messages();
@@ -24,12 +24,14 @@ public class MessagesService {
     }
 
     public void updateStatus(String id, Status status) {
-        Messages message = messagesRepository.findById(id).orElse(null);
-        if (message != null) {
-            message.setStatus(status);
-            messagesRepository.save(message);
-        }
+    Messages message = messagesRepository.findById(id).orElse(null);
+    if (message != null) {
+        message.setStatus(status);
+        messagesRepository.save(message);
+    } else {
+        System.out.println("Message with id " + id + " not found");
     }
+}
 
     public List<Messages> findMessagesByStatus(Status status) {
         return messagesRepository.findByStatus(status);
