@@ -17,9 +17,9 @@ public class MessagesInitializer {
     @PostConstruct
     public void initMessages(){
 
-        firstMessages.add(new MessagesToSend("1", "Content 1", "Subject 1", "atomspeed80k@gmail.com"));
-        firstMessages.add(new MessagesToSend("2", "Content 2", "Subject 2", "speedatom80k@gmail.com"));
-        firstMessages.add(new MessagesToSend("3", "Content 3", "Subject 3", "atomspeed80k@gmail.com"));
+        firstMessages.add(new MessagesToSend("1", "Content 1", "Subject 1", "emailtotest@example.com"));
+        firstMessages.add(new MessagesToSend("2", "Content 2", "Subject 2", "emailtotest@example.com"));
+        firstMessages.add(new MessagesToSend("3", "Content 3", "Subject 3", "emailtotest@example.com"));
 
     }
 }
